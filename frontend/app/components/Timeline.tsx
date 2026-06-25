@@ -60,7 +60,7 @@ export default function Timeline({ data, activeSources, onSelectCluster }: Props
             ]}
             labelFormatter={(label) => `📌 ${label}`}
           />
-          <Bar dataKey="duration" radius={[0, 6, 6, 0]} cursor="pointer" onClick={(d) => onSelectCluster(d.id)} minPointSize={6}>
+          <Bar dataKey="duration" radius={[0, 6, 6, 0]} cursor="pointer" oonClick={(d) => d.id && onSelectCluster(d.id as number)} minPointSize={6}>
             {chartData.map((entry, index) => (
               <Cell key={entry.id} fill={colors[index % colors.length]} opacity={0.9} />
             ))}
