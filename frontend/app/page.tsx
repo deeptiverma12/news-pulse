@@ -9,43 +9,15 @@ const API = process.env.NEXT_PUBLIC_API_URL;
 export default function Home() {
   const [timeline, setTimeline] = useState([]);
   const [selectedCluster, setSelectedCluster] = useState(null);
-  const [activeSources, setActiveSources] = useState(["BBC", "NPR", "Reuters"]);
-  const [refreshing, setRefreshing] = useState(false);
-  const [status, setStatus] = useState("");
 
   const fetchTimeline = async () => {
     const { data } = await axios.get(`${API}/timeline`);
     setTimeline(data);
   };
 
-  useEffect(() => { fetchTimeline(); }, []);
-
-  const toggleSource = (source: string) => {
-    setActiveSources((prev) =>
-      prev.includes(source) ? prev.filter((s) => s !== source) : [...prev, source]
-    );
-  };
-
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    setStatus("Scraping latest news...");
-    const { data } = await axios.post(`${API}/ingest/trigger`);
-    const jobId = data.jobId;
-    const interval = setInterval(async () => {
-      const { data: jobData } = await axios.get(`${API}/ingest/status/${jobId}`);
-      if (jobData.status === "done") {
-        clearInterval(interval);
-        setRefreshing(false);
-        fetchTimeline();
-        setStatus("✅ Timeline updated!");
-        setTimeout(() => setStatus(""), 3000);
-      } else if (jobData.status === "failed") {
-        clearInterval(interval);
-        setRefreshing(false);
-        setStatus("❌ Refresh failed");
-      }
-    }, 2000);
-  };
+  useEffect(() => {
+    fetchTimeline();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
@@ -60,13 +32,6 @@ export default function Home() {
               AI-powered topic clustering from live news feeds
             </p>
           </div>
-          <button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-lg text-sm font-semibold transition-all flex items-center gap-2"
-          >
-            {refreshing ? "⏳ Refreshing..." : "🔄 Refresh News"}
-          </button>
         </div>
       </div>
 
@@ -90,29 +55,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Filter */}
-        <div className="flex items-center gap-3 mb-6">
-          <span className="text-gray-400 text-sm">Filter by source:</span>
-          {["BBC", "NPR", "Reuters"].map((s) => (
-            <button
-              key={s}
-              onClick={() => toggleSource(s)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all border ${
-                activeSources.includes(s)
-                  ? "bg-blue-600 border-blue-600 text-white"
-                  : "border-gray-700 text-gray-400 hover:border-gray-500"
-              }`}
-            >
-              {s}
-            </button>
-          ))}
-          {status && <span className="ml-auto text-yellow-400 text-sm">{status}</span>}
-        </div>
-
         {/* Timeline */}
         <Timeline
           data={timeline}
-          activeSources={activeSources}
           onSelectCluster={setSelectedCluster}
         />
 
