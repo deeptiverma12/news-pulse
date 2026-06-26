@@ -25,7 +25,6 @@ Built as a take-home assessment for the Xponentium Technology Intern role.
 4. Everything is stored in a PostgreSQL database (Supabase).
 5. A Node.js/Express API serves the clusters and articles.
 6. A Next.js frontend renders an interactive horizontal-bar timeline — bar length shows how long a topic stayed in the news, and clicking a bar opens the full list of articles in that cluster, each linking back to the original source.
-7. A "Refresh News" button on the frontend triggers a fresh scrape + re-cluster on demand.
 
 ---
 
