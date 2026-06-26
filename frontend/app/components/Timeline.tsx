@@ -41,11 +41,19 @@ export default function Timeline({ data, activeSources, onSelectCluster }: Props
       <h2 className="text-lg font-semibold mb-1 text-gray-200">📊 Topic Timeline</h2>
       <p className="text-gray-500 text-xs mb-6">Click a bar to explore articles in that cluster</p>
       <ResponsiveContainer width="100%" height={500}>
-        <BarChart
-          data={chartData}
-          layout="vertical"
-          margin={{ left: 10, right: 60, top: 5, bottom: 30 }}
-        >
+  <BarChart
+    data={chartData}
+    layout="vertical"
+    margin={{ left: 10, right: 60, top: 5, bottom: 30 }}
+    onClick={(state) => {
+      console.log("CHART clicked, state:", state);
+      if (state && state.activePayload && state.activePayload[0]) {
+        const id = state.activePayload[0].payload.id;
+        console.log("Resolved id:", id);
+        onSelectCluster(id);
+      }
+    }}
+  >
           <XAxis
             type="number"
             stroke="#374151"
