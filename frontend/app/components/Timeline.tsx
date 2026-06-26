@@ -29,6 +29,13 @@ export default function Timeline({ data, activeSources, onSelectCluster }: Props
 
   const colors = ["#3b82f6", "#8b5cf6", "#06b6d4", "#10b981", "#f59e0b", "#ef4444", "#ec4899", "#14b8a6"];
 
+  const handleClick = (data: any) => {
+    console.log("Bar clicked, data received:", data);
+    if (data && data.id) {
+      onSelectCluster(data.id);
+    }
+  };
+
   return (
     <div className="bg-[#0d1326] border border-gray-800 rounded-xl p-6 mb-6">
       <h2 className="text-lg font-semibold mb-1 text-gray-200">📊 Topic Timeline</h2>
@@ -54,13 +61,13 @@ export default function Timeline({ data, activeSources, onSelectCluster }: Props
           />
           <Tooltip
             contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: "8px", color: "#f1f5f9" }}
-            formatter={(value: any, name: any, props: any) => [
+            formatter={(value: number, name: string, props: any) => [
               `${props.payload.articleCount} article${props.payload.articleCount > 1 ? "s" : ""}`,
               "Articles"
             ]}
-            labelFormatter={(label) => `📌 ${label}`}
+            labelFormatter={(label: string) => `📌 ${label}`}
           />
-          <Bar dataKey="duration" radius={[0, 6, 6, 0]} cursor="pointer" oonClick={(d) => d.id && onSelectCluster(d.id as number)} minPointSize={6}>
+          <Bar dataKey="duration" radius={[0, 6, 6, 0]} cursor="pointer" onClick={handleClick} minPointSize={6}>
             {chartData.map((entry, index) => (
               <Cell key={entry.id} fill={colors[index % colors.length]} opacity={0.9} />
             ))}
